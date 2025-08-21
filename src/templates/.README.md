@@ -77,7 +77,7 @@ ExecStart=/usr/bin/sh -c '                   \\
   mkdir -p /opt/\$BKG_PATH                  ;\\
   docker run -v /opt/\$BKG_PATH:/app         \\
     --env-file <(env | grep GITHUB)          \\
-    ghcr.io/\$GITHUB_OWNER/\${BKG_PATH////:} \\
+    ghcr.io/\${GITHUB_OWNER,,}/\${BKG_PATH////:} \\
     src/test/update.sh -m 0 -d 0'
 
 [Install]
