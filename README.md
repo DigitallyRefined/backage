@@ -16,14 +16,25 @@ Ever wish you could show npm, gem, mvn, Gradle, NuGet, or GHCR badges for GitHub
 
 ## Getting Started
 
-If this is [`ipitio/backage`](https://github.com/ipitio/backage), all you have to do is **star the repo to get your public packages added!** The service's circular priority queue will update the [closed-loop system](https://github.com/DigitallyRefined/backage/releases/latest) with them within the next few hours--as long as your profile is set to [public](https://github.com/ipitio/backage/issues/34#issuecomment-2968850773). Additionally watching and forking the repo, and following the owner, are ways to increase their priority. Yes, I know, but these are the graphs GitHub has available.
+If this is [`ipitio/backage`](https://github.com/ipitio/backage), all you have to do is **star the repo to get your public packages added!** The service's circular priority queue will update the [closed-loop system](https://github.com/DigitallyRefined/backage/releases/latest) with them within the next few hours. Additionally watching and forking the repo, and following the owner, are ways to increase their priority. Yes, I know, but these are the graphs GitHub has available.
 
-Otherwise, if this is a fork, you'd prefer an alternative method, or your packages weren't added to the [index](https://github.com/DigitallyRefined/backage/tree/index) after a day, enter the case-sensitive name of each missing user or organization on a new line at the top of `owners.txt` [here](https://github.com/DigitallyRefined/backage/edit/master/owners.txt) and make a pull request. Please submit just the name(s) -- ids, repos, and packages will be found automatically!
+> [!WARNING]
+> For this to work, your profile must be set to [public](https://github.com/ipitio/backage/issues/34#issuecomment-2968850773).
 
-New packages won't be added until *all* existing ones are refreshed; you should also create an independent instance that'll update faster and more frequently, up to hourly. Your own packages will be picked up automatically! If you need to edit `owners.txt`, do so after the first run. This centralized repo will then serve as a backup for all subsets of packages not in `optout.txt`. Simply fork just the `master` branch, choose one of the following options, and use the [Alternative URL](#alternative-url) when it changes.
+Otherwise, if this is a fork, you'd prefer an alternative method, or your packages weren't added to the [index](https://github.com/DigitallyRefined/backage/tree/index) after a day, enter the case-sensitive name of each missing user or organization on a new line at the top of `owners.txt` [here](https://github.com/DigitallyRefined/backage/edit/master/owners.txt) and make a pull request. Don't worry -- while my Contribution Graph is an uptime monitor of sorts, yours won't be. See the top of `bkg.sh` for details about available options, which must come last when passed to `update.sh`, as shown in `Self-Host`.
+
+> [!TIP]
+> You only need to add the name(s), IDs are fetched as needed.
+
+New packages won't be added until *all* existing ones are refreshed; you should also create an independent instance that'll update faster and more frequently. Simply fork just the `master` branch, choose one of the following options, and use the [Alternative URL](#alternative-url) when it changes. This centralized repo will then serve as a backup for all subsets of packages not in `optout.txt`.
+
+> [!IMPORTANT]
+> Your own packages will be picked up automatically! If you need to edit `owners.txt`, do so after the first run.
 
 <details>
 <summary>With Actions</summary>
+
+This will use a lot of minutes on GitHub-hosted runners, so you may want to use your own.
 
 1. Enable Actions from its tab
 2. Enable all disabled workflows
@@ -33,16 +44,47 @@ New packages won't be added until *all* existing ones are refreshed; you should 
 <details>
 <summary>Self-Host</summary>
 
-1. Set the variables
-2. Run the commands
+This is an example for `systemd`; adapt it to your needs. Please note:
+
+- Docker needs to be installed
+- You don't need to set `GITHUB_TOKEN` if you're logged in with `gh` or you'll first use your PAT to run (replace `*` with `https` or `ssh`):
 
 ```bash
-GITHUB_TOKEN=<your PAT>
-GITHUB_OWNER=<your username>
-GITHUB_REPO=backage
-GITHUB_BRANCH=master
-git clone --depth=1 https://github.com/DigitallyRefined/backage.git
-docker run -v $PWD/backage:/app --env-file <(env | grep GITHUB) ghcr.io/DigitallyRefined/backage:master bash src/test/update.sh
+git clone --depth=1 -b master --single-branch *://<PAT>@github.com/DigitallyRefined/backage /opt/backage/master
+```
+
+- `-m 0` ensures only the public packages of the owners you've added are updated (default)
+  - You'll need the proper permissions to update private packages
+- `-d 0` allows everything to be updated in one go
+  - A graceful restart is initiated every 4.5 hours by default
+
+```bash
+echo "[Unit]
+Description=Run Backage
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+ExecStart=/usr/bin/sh -c '                   \\
+  GITHUB_TOKEN=<PAT>                        ;\\
+  GITHUB_OWNER=<username>                   ;\\
+  GITHUB_REPO=backage                       ;\\
+  GITHUB_BRANCH=master                      ;\\
+  BKG_PATH=\$GITHUB_REPO/\$GITHUB_BRANCH    ;\\
+  mkdir -p /opt/\$BKG_PATH                  ;\\
+  docker run -v /opt/\$BKG_PATH:/app         \\
+    --env-file <(env | grep GITHUB)          \\
+    ghcr.io/\$GITHUB_OWNER/\${BKG_PATH////:} \\
+    src/test/update.sh -m 0 -d 0'
+
+[Install]
+WantedBy=multi-user.target
+" | sudo tee /etc/systemd/system/bkg.service
+sudo systemctl daemon-reload
+sudo systemctl enable --now bkg
 ```
 
 </details>
@@ -53,7 +95,10 @@ docker run -v $PWD/backage:/app --env-file <(env | grep GITHUB) ghcr.io/Digitall
 https://ipitio.github.io/backage/OWNER/[REPO/[PACKAGE]].FORMAT
 ```
 
-Once the packages you're interested in have been added, replace the parameters with their respective values, scoping to your parsing needs, then access the latest data however you want. The format can be either `json` or `xml`. Use something like [shields.io/json](https://shields.io/badges/dynamic-json-badge) or [shields.io/xml](https://shields.io/badges/dynamic-xml-badge) to make badges like [this one](https://github.com/badges/shields/issues/5594#issuecomment-2157626147); you'll need the latter to evaluate expressions, like filters ([issue](https://github.com/ipitio/backage/issues/23)).
+Once the packages you're interested in have been added, replace the parameters with their respective values, scoping to your parsing needs, then access the latest data however you want. The format can be either `json` or `xml`.
+
+> [!NOTE]
+> Use something like [shields.io/json](https://shields.io/badges/dynamic-json-badge) or [shields.io/xml](https://shields.io/badges/dynamic-xml-badge) to make badges like [this one](https://github.com/badges/shields/issues/5594#issuecomment-2157626147). You'll need the latter to evaluate expressions, like filters ([issue](https://github.com/ipitio/backage/issues/23)).
 
 ### Available Properties
 
