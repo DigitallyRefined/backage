@@ -1,14 +1,14 @@
 <div align="center">
 
-[![logo](src/img/logo-b.webp)](https://github.com/ipitio/backage)
+[![logo](src/img/logo-b.webp)](https://github.com/DigitallyRefined/backage)
 
-# [backage](https://github.com/ipitio/backage)
+# [backage](https://github.com/DigitallyRefined/backage)
 
 **It's all part and parcel**
 
 ---
 
-[![packages](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgithub.com%2Fipitio%2Fbackage%2Fraw%2Findex%2F.json&query=%24.packages&logo=github&logoColor=959da5&label=packages&labelColor=333a41&color=grey)](https://github.com/ipitio/backage/tree/index) [![build](https://github.com/ipitio/backage/actions/workflows/publish.yml/badge.svg)](https://github.com/ipitio/backage/pkgs/container/backage) [![built](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgithub.com%2Fipitio%2Fbackage%2Fraw%2Findex%2F.json&query=%24.date&logo=github&logoColor=959da5&label=built&labelColor=333a41&color=purple)](https://github.com/ipitio/backage/releases/latest)
+[![packages](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgithub.com%2FDigitallyRefined%2Fbackage%2Fraw%2Findex%2F.json&query=%24.packages&logo=github&logoColor=959da5&label=packages&labelColor=333a41&color=grey)](https://github.com/DigitallyRefined/backage/tree/index) [![build](https://github.com/DigitallyRefined/backage/actions/workflows/publish.yml/badge.svg)](https://github.com/DigitallyRefined/backage/pkgs/container/backage) [![built](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgithub.com%2FDigitallyRefined%2Fbackage%2Fraw%2Findex%2F.json&query=%24.date&logo=github&logoColor=959da5&label=built&labelColor=333a41&color=purple)](https://github.com/DigitallyRefined/backage/releases/latest)
 
 </div>
 
@@ -16,12 +16,12 @@ Ever wish you could show npm, gem, mvn, Gradle, NuGet, or GHCR badges for GitHub
 
 ## Getting Started
 
-If this is [`ipitio/backage`](https://github.com/ipitio/backage), all you have to do is **star the repo to get your public packages added!** The service's circular priority queue will update the [closed-loop system](https://github.com/ipitio/backage/releases/latest) with them within the next few hours. Additionally watching and forking the repo, and following the owner, are ways to increase their priority. Yes, I know, but these are the graphs GitHub has available.
+If this is [`ipitio/backage`](https://github.com/ipitio/backage), all you have to do is **star the repo to get your public packages added!** The service's circular priority queue will update the [closed-loop system](https://github.com/DigitallyRefined/backage/releases/latest) with them within the next few hours. Additionally watching and forking the repo, and following the owner, are ways to increase their priority. Yes, I know, but these are the graphs GitHub has available.
 
 > [!WARNING]
 > For this to work, your profile must be set to [public](https://github.com/ipitio/backage/issues/34#issuecomment-2968850773).
 
-Otherwise, if this is a fork, you'd prefer an alternative method, or your packages weren't added to the [index](https://github.com/ipitio/backage/tree/index) after a day, enter the case-sensitive name of each missing user or organization on a new line at the top of `owners.txt` [here](https://github.com/ipitio/backage/edit/master/owners.txt) and make a pull request. Don't worry -- while my Contribution Graph is an uptime monitor of sorts, yours won't be. See the top of `bkg.sh` for details about available options, which must come last when passed to `update.sh`, as shown in `Self-Host`.
+Otherwise, if this is a fork, you'd prefer an alternative method, or your packages weren't added to the [index](https://github.com/DigitallyRefined/backage/tree/index) after a day, enter the case-sensitive name of each missing user or organization on a new line at the top of `owners.txt` [here](https://github.com/DigitallyRefined/backage/edit/master/owners.txt) and make a pull request. Don't worry -- while my Contribution Graph is an uptime monitor of sorts, yours won't be. See the top of `bkg.sh` for details about available options, which must come last when passed to `update.sh`, as shown in `Self-Host`.
 
 > [!TIP]
 > You only need to add the name(s), IDs are fetched as needed.
@@ -50,7 +50,7 @@ This is an example for `systemd`; adapt it to your needs. Please note:
 - You don't need to set `GITHUB_TOKEN` if you're logged in with `gh` or you'll first use your PAT to run (replace `*` with `https` or `ssh`):
 
 ```bash
-git clone --depth=1 -b master --single-branch *://<PAT>@github.com/ipitio/backage /opt/backage/master
+git clone --depth=1 -b master --single-branch *://<PAT>@github.com/DigitallyRefined/backage /opt/backage/master
 ```
 
 - `-m 0` ensures only the public packages of the owners you've added are updated (default)
@@ -231,7 +231,7 @@ As can packages in `owner[/repo]/.xml` files:
 ### Alternative URL
 
 ```py
-https://github.com/ipitio/backage/raw/index/OWNER/[REPO/[PACKAGE]].FORMAT
+https://github.com/DigitallyRefined/backage/raw/index/OWNER/[REPO/[PACKAGE]].FORMAT
 ```
 
 The endpoint is also available here! This will change to your fork once it updates.
@@ -244,4 +244,4 @@ https://ipitio.github.io/backage?json=https://URL/ENCODED/JSON
 
 Use your own external JSON with this proxy to convert it into XML. This doesn't currently work with Shields. Try it out in your browser:
 
-**<https://ipitio.github.io/backage?json=https://raw.githubusercontent.com/ipitio/backage/index/.json>**
+**<https://ipitio.github.io/backage?json=https://raw.githubusercontent.com/DigitallyRefined/backage/index/.json>**
